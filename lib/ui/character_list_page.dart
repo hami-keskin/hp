@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import '../utils/error_messages.dart';
 import '../viewmodels/character_view_model.dart';
 import 'character_detail_page.dart';
 
@@ -28,7 +29,10 @@ class CharacterListPage extends HookConsumerWidget {
       appBar: AppBar(title: const Text('Harry Potter Karakterleri')),
       body: state.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text(e.toString())),
+        error: (e, _) => Center(child: Text(
+          mapDioErrorToMessage(e),
+          textAlign: TextAlign.center,
+        )),
         data: (list) {
           final filtered = query.value.isEmpty
               ? list
