@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../viewmodels/character_view_model.dart';
-import '../utils/error_messages.dart';
 import 'character_detail_page.dart';
 
 class CharacterListPage extends HookConsumerWidget {
@@ -15,7 +14,6 @@ class CharacterListPage extends HookConsumerWidget {
     final ctrl = useScrollController();
     final query = useState('');
 
-    // Infinite scroll listener
     useEffect(() {
       void onScroll() {
         if (ctrl.position.pixels >= ctrl.position.maxScrollExtent - 100 && vm.hasMore && query.value.isEmpty) {
@@ -30,10 +28,7 @@ class CharacterListPage extends HookConsumerWidget {
       appBar: AppBar(title: const Text('Harry Potter Karakterleri')),
       body: state.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text(
-          mapDioErrorToMessage(e),
-          textAlign: TextAlign.center,
-        )),
+        error: (e, _) => Center(child: Text(e.toString())),
         data: (list) {
           final filtered = query.value.isEmpty
               ? list
@@ -42,7 +37,6 @@ class CharacterListPage extends HookConsumerWidget {
 
           return Column(
             children: [
-              // Arama çubuğu
               Padding(
                 padding: const EdgeInsets.all(8),
                 child: TextField(
@@ -50,19 +44,15 @@ class CharacterListPage extends HookConsumerWidget {
                     hintText: 'Ara...',
                     prefixIcon: Icon(Icons.search),
                   ),
-                  onChanged: (v) {
-                    query.value = v;
-                  },
+                  onChanged: (v) => query.value = v,
                 ),
               ),
-              // Liste
               Expanded(
                 child: ListView.builder(
                   controller: ctrl,
                   itemCount: itemCount,
-                  itemBuilder: (ctx, i) {
+                  itemBuilder: (_, i) {
                     if (i == filtered.length) {
-                      // load more göstergesi
                       return const Padding(
                         padding: EdgeInsets.symmetric(vertical: 16),
                         child: Center(child: CircularProgressIndicator()),
@@ -75,12 +65,10 @@ class CharacterListPage extends HookConsumerWidget {
                         child: c.image.isEmpty ? const Icon(Icons.person) : null,
                       ),
                       title: Text(c.name),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => CharacterDetailPage(character: c)),
-                        );
-                      },
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => CharacterDetailPage(character: c)),
+                      ),
                     );
                   },
                 ),

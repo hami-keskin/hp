@@ -3,16 +3,10 @@ class Wand {
   final String core;
   final num length;
 
-  Wand({
-    required this.wood,
-    required this.core,
-    required this.length,
-  });
+  Wand({required this.wood, required this.core, required this.length});
 
   factory Wand.fromJson(Map<String, dynamic>? json) {
-    if (json == null) {
-      return Wand(wood: '', core: '', length: 0);
-    }
+    if (json == null) return Wand(wood: '', core: '', length: 0);
     return Wand(
       wood: json['wood'] as String? ?? '',
       core: json['core'] as String? ?? '',
@@ -72,8 +66,7 @@ class Character {
       name: json['name'] as String? ?? '',
       alternateNames: (json['alternate_names'] as List<dynamic>?)
           ?.map((e) => e as String)
-          .toList() ??
-          [],
+          .toList() ?? [],
       species: json['species'] as String? ?? '',
       gender: json['gender'] as String? ?? '',
       house: json['house'] as String? ?? '',
@@ -90,8 +83,7 @@ class Character {
       actor: json['actor'] as String? ?? '',
       alternateActors: (json['alternate_actors'] as List<dynamic>?)
           ?.map((e) => e as String)
-          .toList() ??
-          [],
+          .toList() ?? [],
       alive: json['alive'] as bool? ?? false,
       image: json['image'] as String? ?? '',
     );

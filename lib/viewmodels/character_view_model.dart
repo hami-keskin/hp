@@ -9,12 +9,10 @@ final characterRepositoryProvider = Provider<CharacterRepository>(
 final characterViewModelProvider = StateNotifierProvider<
     CharacterViewModel,
     AsyncValue<List<Character>>
->(
-      (ref) {
-    final repo = ref.watch(characterRepositoryProvider);
-    return CharacterViewModel(repo);
-  },
-);
+>((ref) {
+  final repo = ref.watch(characterRepositoryProvider);
+  return CharacterViewModel(repo);
+});
 
 class CharacterViewModel extends StateNotifier<AsyncValue<List<Character>>> {
   final CharacterRepository _repo;
@@ -48,6 +46,5 @@ class CharacterViewModel extends StateNotifier<AsyncValue<List<Character>>> {
     }
   }
 
-  /// Scroll listener için, daha sayfa var mı kontrolü
   bool get hasMore => _hasMore;
 }
