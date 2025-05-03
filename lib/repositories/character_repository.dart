@@ -2,7 +2,9 @@ import 'package:dio/dio.dart';
 import '../models/character.dart';
 
 class CharacterRepository {
-  final Dio _dio = Dio(BaseOptions(baseUrl: 'https://hp-api.onrender.com'));
+  final Dio _dio;
+
+  CharacterRepository(this._dio);
 
   Future<List<Character>> fetchPage({required int page, required int limit}) async {
     final resp = await _dio.get(

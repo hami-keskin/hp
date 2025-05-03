@@ -1,9 +1,14 @@
+import 'package:dio/dio.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../models/character.dart';
 import '../repositories/character_repository.dart';
 
+final dioProvider = Provider<Dio>(
+      (ref) => Dio(BaseOptions(baseUrl: 'https://hp-api.onrender.com')),
+);
+
 final characterRepositoryProvider = Provider<CharacterRepository>(
-      (ref) => CharacterRepository(),
+      (ref) => CharacterRepository(ref.watch(dioProvider)),
 );
 
 final characterViewModelProvider = AsyncNotifierProvider<
@@ -20,10 +25,9 @@ class CharacterViewModel extends AsyncNotifier<List<Character>> {
   bool _hasMore = true;
   final List<Character> _items = [];
 
-  /// Repository'yi ref üzerinden okuyarak alıyoruz
-  CharacterRepository get _repo => ref.read(characterRepositoryProvider);
+  CharacterRepository get _repo =>
+      ref.read(characterRepositoryProvider);
 
-  /// build, widget ilk yüklendiğinde çağrılır
   @override
   Future<List<Character>> build() async {
     return await _loadNextPage();
