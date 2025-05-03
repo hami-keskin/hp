@@ -31,16 +31,11 @@ class CharacterViewModel extends AsyncNotifier<List<Character>> {
   @override
   Future<List<Character>> build() async {
     return await _loadNextPage();
-  }
-
-  Future<List<Character>> _loadNextPage() async {
-    final newItems = await _repo.fetchPage(
-      page: _currentPage,
-      limit: _pageSize,
-    );
+    // ilk sayfayı yükle
+    final firstPage = await _repo.fetchPage(page: _currentPage, limit: _pageSize);
     _currentPage++;
-    _hasMore = newItems.length == _pageSize;
-    _items.addAll(newItems);
+    _hasMore = firstPage.length == _pageSize;
+    _items.addAll(firstPage);
     return List.unmodifiable(_items);
   }
 
@@ -48,9 +43,15 @@ class CharacterViewModel extends AsyncNotifier<List<Character>> {
     if (_isLoading || !_hasMore) return;
     _isLoading = true;
     try {
-      state = const AsyncValue.loading();
-      final updated = await _loadNextPage();
-      state = AsyncValue.data(updated);
+      final nextPage = await _repo.fetchPage(
+        page: _currentPage,
+        limit: _pageSize,
+      );
+      _currentPage++;
+      _hasMore = nextPage.length == _pageSize;
+      _items.addAll(nextPage);
+      // sadece güncellenmiş veriyle emit et
+      state = AsyncValue.data(List.unmodifiable(_items));
     } catch (e, st) {
       state = AsyncValue.error(e, st);
     } finally {
