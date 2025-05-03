@@ -3,12 +3,18 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../models/character.dart';
 import '../repositories/character_repository.dart';
 
+const String kApiBaseUrl = 'https://hp-api.onrender.com';
+const String kCharactersEndpoint = '/api/characters';
+
 final dioProvider = Provider<Dio>(
-      (ref) => Dio(BaseOptions(baseUrl: 'https://hp-api.onrender.com')),
+      (ref) => Dio(BaseOptions(baseUrl: kApiBaseUrl)),
 );
 
 final characterRepositoryProvider = Provider<CharacterRepository>(
-      (ref) => CharacterRepository(ref.watch(dioProvider)),
+      (ref) => CharacterRepository(
+    ref.watch(dioProvider),
+    endpoint: kCharactersEndpoint,
+  ),
 );
 
 final characterViewModelProvider = AsyncNotifierProvider<
