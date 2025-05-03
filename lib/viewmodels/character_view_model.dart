@@ -30,7 +30,6 @@ class CharacterViewModel extends AsyncNotifier<List<Character>> {
 
   @override
   Future<List<Character>> build() async {
-    return await _loadNextPage();
     // ilk sayfayı yükle
     final firstPage = await _repo.fetchPage(page: _currentPage, limit: _pageSize);
     _currentPage++;
