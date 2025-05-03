@@ -6,39 +6,47 @@ final characterRepositoryProvider = Provider<CharacterRepository>(
       (ref) => CharacterRepository(),
 );
 
-final characterViewModelProvider = StateNotifierProvider<
+final characterViewModelProvider = AsyncNotifierProvider<
     CharacterViewModel,
-    AsyncValue<List<Character>>
->((ref) {
-  final repo = ref.watch(characterRepositoryProvider);
-  return CharacterViewModel(repo);
-});
+    List<Character>
+>(
+      () => CharacterViewModel(),
+);
 
-class CharacterViewModel extends StateNotifier<AsyncValue<List<Character>>> {
-  final CharacterRepository _repo;
+class CharacterViewModel extends AsyncNotifier<List<Character>> {
   static const int _pageSize = 20;
-
   int _currentPage = 0;
   bool _isLoading = false;
   bool _hasMore = true;
   final List<Character> _items = [];
 
-  CharacterViewModel(this._repo) : super(const AsyncValue.loading()) {
-    loadMore();
+  /// Repository'yi ref üzerinden okuyarak alıyoruz
+  CharacterRepository get _repo => ref.read(characterRepositoryProvider);
+
+  /// build, widget ilk yüklendiğinde çağrılır
+  @override
+  Future<List<Character>> build() async {
+    return await _loadNextPage();
+  }
+
+  Future<List<Character>> _loadNextPage() async {
+    final newItems = await _repo.fetchPage(
+      page: _currentPage,
+      limit: _pageSize,
+    );
+    _currentPage++;
+    _hasMore = newItems.length == _pageSize;
+    _items.addAll(newItems);
+    return List.unmodifiable(_items);
   }
 
   Future<void> loadMore() async {
     if (_isLoading || !_hasMore) return;
     _isLoading = true;
     try {
-      final newItems = await _repo.fetchPage(
-        page: _currentPage,
-        limit: _pageSize,
-      );
-      _currentPage++;
-      _items.addAll(newItems);
-      _hasMore = newItems.length == _pageSize;
-      state = AsyncValue.data(List.unmodifiable(_items));
+      state = const AsyncValue.loading();
+      final updated = await _loadNextPage();
+      state = AsyncValue.data(updated);
     } catch (e, st) {
       state = AsyncValue.error(e, st);
     } finally {

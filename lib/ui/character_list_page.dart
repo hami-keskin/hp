@@ -17,7 +17,9 @@ class CharacterListPage extends HookConsumerWidget {
 
     useEffect(() {
       void onScroll() {
-        if (ctrl.position.pixels >= ctrl.position.maxScrollExtent - 100 && vm.hasMore && query.value.isEmpty) {
+        if (ctrl.position.pixels >= ctrl.position.maxScrollExtent - 100 &&
+            vm.hasMore &&
+            query.value.isEmpty) {
           vm.loadMore();
         }
       }
@@ -29,14 +31,18 @@ class CharacterListPage extends HookConsumerWidget {
       appBar: AppBar(title: const Text('Harry Potter Karakterleri')),
       body: state.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text(
-          mapDioErrorToMessage(e),
-          textAlign: TextAlign.center,
-        )),
+        error: (e, _) => Center(
+          child: Text(
+            mapDioErrorToMessage(e),
+            textAlign: TextAlign.center,
+          ),
+        ),
         data: (list) {
           final filtered = query.value.isEmpty
               ? list
-              : list.where((c) => c.name.toLowerCase().contains(query.value.toLowerCase())).toList();
+              : list
+              .where((c) => c.name.toLowerCase().contains(query.value.toLowerCase()))
+              .toList();
           final itemCount = filtered.length + (vm.hasMore && query.value.isEmpty ? 1 : 0);
 
           return Column(
