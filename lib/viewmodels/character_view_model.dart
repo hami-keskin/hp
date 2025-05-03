@@ -30,8 +30,10 @@ class CharacterViewModel extends AsyncNotifier<List<Character>> {
 
   @override
   Future<List<Character>> build() async {
-    // ilk sayfayı yükle
-    final firstPage = await _repo.fetchPage(page: _currentPage, limit: _pageSize);
+    final firstPage = await _repo.fetchPage(
+      page: _currentPage,
+      limit: _pageSize,
+    );
     _currentPage++;
     _hasMore = firstPage.length == _pageSize;
     _items.addAll(firstPage);
@@ -49,7 +51,6 @@ class CharacterViewModel extends AsyncNotifier<List<Character>> {
       _currentPage++;
       _hasMore = nextPage.length == _pageSize;
       _items.addAll(nextPage);
-      // sadece güncellenmiş veriyle emit et
       state = AsyncValue.data(List.unmodifiable(_items));
     } catch (e, st) {
       state = AsyncValue.error(e, st);

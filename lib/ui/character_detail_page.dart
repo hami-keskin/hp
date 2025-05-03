@@ -12,8 +12,7 @@ class CharacterDetailPage extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('$label: ',
-              style: const TextStyle(fontWeight: FontWeight.bold)),
+          Text('$label: ', style: const TextStyle(fontWeight: FontWeight.bold)),
           Expanded(child: Text(value)),
         ],
       ),
@@ -23,8 +22,7 @@ class CharacterDetailPage extends StatelessWidget {
   Widget _buildSectionHeader(String title) {
     return Padding(
       padding: const EdgeInsets.only(top: 16, bottom: 4),
-      child: Text(title,
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+      child: Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
     );
   }
 
@@ -63,10 +61,7 @@ class CharacterDetailPage extends StatelessWidget {
             _buildRow('Hogwarts Student', c.hogwartsStudent ? 'Evet' : 'Hayır'),
             _buildRow('Hogwarts Staff', c.hogwartsStaff ? 'Evet' : 'Hayır'),
             _buildRow('Actor', c.actor),
-            _buildRow(
-              'Alternate Actors',
-              c.alternateActors.isEmpty ? '–' : c.alternateActors.join(', '),
-            ),
+            _buildRow('Alternate Actors', c.alternateActors.isEmpty ? '–' : c.alternateActors.join(', ')),
             _buildRow('Alive', c.alive ? 'Evet' : 'Hayır'),
           ],
         ),
